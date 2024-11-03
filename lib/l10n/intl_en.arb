@@ -1,0 +1,14 @@
+{
+  "title": "Phytosvit APP",
+  "user_email": "E-mail address",
+  "user_password": "Password",
+  "user_sign_in": "Log in",
+  "login_header_1": "Sign in to your account",
+  "login_header_2": "Enter your email and password to login",
+  "login_remember_me": "Remember me",
+  "login_forgot_password": "Forgot Password ?",
+  "setting_language": "Language",
+  "setting_dark_theme": "Dark theme",
+  "language_ukraine": "Ukrainian",
+  "language_english": "English"
+}
