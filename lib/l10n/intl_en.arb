@@ -1,4 +1,5 @@
 {
+  "@@locale": "en",
   "title": "Phytosvit APP",
   "user_email": "E-mail address",
   "user_password": "Password",
@@ -10,5 +11,16 @@
   "setting_language": "Language",
   "setting_dark_theme": "Dark theme",
   "language_ukraine": "Ukrainian",
-  "language_english": "English"
+  "language_english": "English",
+  "user_name": "Name",
+  "user_confirm_password":"Repeat password",
+  "registration_header_1":"Sign up",
+  "registration_header_2":"Already have an account?",
+  "register_now":"Sign up",
+  "button_user_register":"Registering",
+  "login_back_to_login":"Log in",
+  "error_invalid_password":"You entered the wrong password.",
+  "error_user_not_found":"User with this email address not found",
+  "error_generic":"Error",
+  "document_title":"Document"
 }

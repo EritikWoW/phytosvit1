@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:phytosvit/style/colors.dart';
 import 'package:phytosvit/widgets/custom_input_decoration.dart';
-import 'package:phytosvit/widgets/settings/settings_service.dart';
-import 'package:phytosvit/widgets/settings/language_dropdown.dart';
-import 'package:phytosvit/widgets/settings/theme_switch.dart';
+import 'package:phytosvit/services/settings_service.dart';
+import 'package:phytosvit/widgets/language_dropdown.dart';
+import 'package:phytosvit/providers/theme_provider.dart';
+import 'package:phytosvit/providers/locale_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'generated/l10n.dart';
+import '../generated/l10n.dart';
 
 class AppSettings extends StatefulWidget {
   const AppSettings({super.key});
@@ -18,6 +18,7 @@ class AppSettings extends StatefulWidget {
 
 class AppSettingsState extends State<AppSettings> {
   final TextEditingController _apiController = TextEditingController();
+  final TextEditingController _tokenController = TextEditingController();
   String _selectedLanguage = 'uk';
   bool _isDarkTheme = false;
   final SettingsService _settingsService = SettingsService();
@@ -28,28 +29,43 @@ class AppSettingsState extends State<AppSettings> {
     _loadSettings();
   }
 
-  void _loadSettings() async {
-    var settings = await _settingsService.loadSettings();
-    setState(() {
-      _apiController.text = settings['api_address'];
-      _selectedLanguage = settings['language'];
-      _isDarkTheme = settings['isDarkTheme'];
-    });
+  Future<void> _loadSettings() async {
+    await _settingsService.loadSettings();
+    if (mounted) {
+      setState(() {
+        _apiController.text = _settingsService.apiAddress;
+        _tokenController.text = _settingsService.apiToken;
+        _selectedLanguage = _settingsService.language;
+        _isDarkTheme = _settingsService.isDarkTheme;
+      });
+    }
   }
 
-  void _saveSettings() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('api_address', _apiController.text);
-    await prefs.setString('language', _selectedLanguage);
-    await prefs.setBool('isDarkTheme', _isDarkTheme);
+  Future<void> _saveSettings() async {
+    try {
+      await _settingsService.saveApiAddress(_apiController.text);
+      await _settingsService.saveApiToken(_tokenController.text);
+      await _settingsService.saveLanguage(_selectedLanguage);
+      await _settingsService.saveTheme(_isDarkTheme);
 
-    if (mounted) {
-      Provider.of<ThemeProvider>(context, listen: false)
-          .toggleTheme(_isDarkTheme);
-      Provider.of<LocaleProvider>(context, listen: false)
-          .changeLocale(_selectedLanguage);
-      Navigator.pop(context);
+      if (mounted) {
+        debugPrint(_selectedLanguage);
+        Provider.of<ThemeProvider>(context, listen: false)
+            .toggleTheme(_isDarkTheme);
+        Provider.of<LocaleProvider>(context, listen: false)
+            .changeLocale(_selectedLanguage);
+        Navigator.pop(context);
+      }
+    } catch (e) {
+      debugPrint('Ошибка при сохранении настроек: $e');
     }
+  }
+
+  @override
+  void dispose() {
+    _apiController.dispose();
+    _tokenController.dispose();
+    super.dispose();
   }
 
   @override
@@ -61,7 +77,6 @@ class AppSettingsState extends State<AppSettings> {
           icon: Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
-        title: null,
       ),
       body: Stack(
         children: [
@@ -83,9 +98,9 @@ class AppSettingsState extends State<AppSettings> {
                     children: [
                       SvgPicture.asset('assets/svg/login_logo.svg'),
                       const SizedBox(height: 24),
-                      Text(
+                      const Text(
                         'Настройки',
-                        style: const TextStyle(
+                        style: TextStyle(
                             fontSize: 32,
                             fontWeight: FontWeight.bold,
                             color: Colors.white),
@@ -94,23 +109,19 @@ class AppSettingsState extends State<AppSettings> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 180),
+                const SizedBox(height: 60),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 17),
                   child: Container(
                     padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10)),
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                     child: SingleChildScrollView(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          TextField(
-                            controller: _apiController,
-                            decoration: customInputDecoration('API адрес'),
-                          ),
-                          const SizedBox(height: 20.0),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -120,9 +131,8 @@ class AppSettingsState extends State<AppSettings> {
                                 selectedLanguage: _selectedLanguage,
                                 onChanged: (value) {
                                   setState(() {
-                                    if (value != null) {
-                                      _selectedLanguage = value;
-                                    }
+                                    debugPrint(value);
+                                    _selectedLanguage = value!;
                                   });
                                 },
                               ),
@@ -136,6 +146,19 @@ class AppSettingsState extends State<AppSettings> {
                                   style: TextStyle(fontSize: 16.0)),
                               Switch(
                                 value: _isDarkTheme,
+                                activeColor: AppColors.greenTeeColor,
+                                inactiveThumbColor: AppColors.greenTeeColor,
+                                inactiveTrackColor:
+                                    AppColors.greenTeeColor.withOpacity(0.3),
+                                trackOutlineColor:
+                                    WidgetStateProperty.resolveWith(
+                                  (final Set<WidgetState> states) {
+                                    if (states.contains(WidgetState.selected)) {
+                                      return null;
+                                    }
+                                    return AppColors.greenTeeColor;
+                                  },
+                                ),
                                 onChanged: (value) {
                                   setState(() {
                                     _isDarkTheme = value;
@@ -147,7 +170,18 @@ class AppSettingsState extends State<AppSettings> {
                               ),
                             ],
                           ),
+                          const SizedBox(height: 40.0),
+                          // Настройки API
+                          _buildInputField(
+                            controller: _apiController,
+                            label: 'API адрес',
+                          ),
                           const SizedBox(height: 20.0),
+                          _buildInputField(
+                            controller: _tokenController,
+                            label: 'API Токен',
+                          ),
+                          const SizedBox(height: 40.0),
                           ElevatedButton(
                             onPressed: _saveSettings,
                             style: ElevatedButton.styleFrom(
@@ -173,6 +207,21 @@ class AppSettingsState extends State<AppSettings> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  // Метод для построения поля ввода с кастомным стилем
+  Widget _buildInputField({
+    required TextEditingController controller,
+    required String label,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16.0),
+      child: TextField(
+        controller: controller,
+        decoration:
+            customInputDecoration(label), // Используем customInputDecoration
       ),
     );
   }

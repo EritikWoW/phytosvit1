@@ -22,8 +22,17 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "button_user_register":
+            MessageLookupByLibrary.simpleMessage("Registering"),
+        "document_title": MessageLookupByLibrary.simpleMessage("Document"),
+        "error_generic": MessageLookupByLibrary.simpleMessage("Error"),
+        "error_invalid_password": MessageLookupByLibrary.simpleMessage(
+            "You entered the wrong password."),
+        "error_user_not_found": MessageLookupByLibrary.simpleMessage(
+            "User with this email address not found"),
         "language_english": MessageLookupByLibrary.simpleMessage("English"),
         "language_ukraine": MessageLookupByLibrary.simpleMessage("Ukrainian"),
+        "login_back_to_login": MessageLookupByLibrary.simpleMessage("Log in"),
         "login_forgot_password":
             MessageLookupByLibrary.simpleMessage("Forgot Password ?"),
         "login_header_1":
@@ -32,11 +41,19 @@ class MessageLookup extends MessageLookupByLibrary {
             "Enter your email and password to login"),
         "login_remember_me":
             MessageLookupByLibrary.simpleMessage("Remember me"),
+        "register_now": MessageLookupByLibrary.simpleMessage("Sign up"),
+        "registration_header_1":
+            MessageLookupByLibrary.simpleMessage("Sign up"),
+        "registration_header_2":
+            MessageLookupByLibrary.simpleMessage("Already have an account?"),
         "setting_dark_theme":
             MessageLookupByLibrary.simpleMessage("Dark theme"),
         "setting_language": MessageLookupByLibrary.simpleMessage("Language"),
         "title": MessageLookupByLibrary.simpleMessage("Phytosvit APP"),
+        "user_confirm_password":
+            MessageLookupByLibrary.simpleMessage("Repeat password"),
         "user_email": MessageLookupByLibrary.simpleMessage("E-mail address"),
+        "user_name": MessageLookupByLibrary.simpleMessage("Name"),
         "user_password": MessageLookupByLibrary.simpleMessage("Password"),
         "user_sign_in": MessageLookupByLibrary.simpleMessage("Log in")
       };

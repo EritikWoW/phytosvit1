@@ -1,4 +1,5 @@
 {
+  "@@locale": "uk",
   "title": "Phytosvit APP",
   "user_email": "Електронна адреса",
   "user_password": "Пароль",
@@ -10,5 +11,16 @@
   "setting_language": "Мова",
   "setting_dark_theme": "Темна тема",
   "language_ukraine": "Українська",
-  "language_english": "Англійська"
+  "language_english": "Англійська",
+  "user_name": "Ім'я",
+  "user_confirm_password":"Повторіть пароль",
+  "registration_header_1":"Зареєструватися",
+  "registration_header_2":"Вже є аккаунт?",
+  "register_now":"Зареєструватися",
+  "button_user_register":"Зареєструватися",
+  "login_back_to_login":"Увійти",
+  "error_invalid_password":"Ви ввели невірний пароль.",
+  "error_user_not_found":"Користувача з такою електронною адресою не знайдено",
+  "error_generic":"Помилка",
+  "document_title":"Документ"
 }

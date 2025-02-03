@@ -22,8 +22,17 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "button_user_register":
+            MessageLookupByLibrary.simpleMessage("Зареєструватися"),
+        "document_title": MessageLookupByLibrary.simpleMessage("Документ"),
+        "error_generic": MessageLookupByLibrary.simpleMessage("Помилка"),
+        "error_invalid_password":
+            MessageLookupByLibrary.simpleMessage("Ви ввели невірний пароль."),
+        "error_user_not_found": MessageLookupByLibrary.simpleMessage(
+            "Користувача з такою електронною адресою не знайдено"),
         "language_english": MessageLookupByLibrary.simpleMessage("Англійська"),
         "language_ukraine": MessageLookupByLibrary.simpleMessage("Українська"),
+        "login_back_to_login": MessageLookupByLibrary.simpleMessage("Увійти"),
         "login_forgot_password":
             MessageLookupByLibrary.simpleMessage("Забули пароль ?"),
         "login_header_1":
@@ -32,11 +41,19 @@ class MessageLookup extends MessageLookupByLibrary {
             "Введіть адресу електронної пошти та пароль для входу"),
         "login_remember_me":
             MessageLookupByLibrary.simpleMessage("Запам\'ятати мене"),
+        "register_now": MessageLookupByLibrary.simpleMessage("Зареєструватися"),
+        "registration_header_1":
+            MessageLookupByLibrary.simpleMessage("Зареєструватися"),
+        "registration_header_2":
+            MessageLookupByLibrary.simpleMessage("Вже є аккаунт?"),
         "setting_dark_theme":
             MessageLookupByLibrary.simpleMessage("Темна тема"),
         "setting_language": MessageLookupByLibrary.simpleMessage("Мова"),
         "title": MessageLookupByLibrary.simpleMessage("Phytosvit APP"),
+        "user_confirm_password":
+            MessageLookupByLibrary.simpleMessage("Повторіть пароль"),
         "user_email": MessageLookupByLibrary.simpleMessage("Електронна адреса"),
+        "user_name": MessageLookupByLibrary.simpleMessage("Ім\'я"),
         "user_password": MessageLookupByLibrary.simpleMessage("Пароль"),
         "user_sign_in": MessageLookupByLibrary.simpleMessage("Увійти")
       };

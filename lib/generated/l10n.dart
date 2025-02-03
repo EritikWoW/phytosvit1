@@ -169,6 +169,116 @@ class S {
       args: [],
     );
   }
+
+  /// `Name`
+  String get user_name {
+    return Intl.message(
+      'Name',
+      name: 'user_name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Repeat password`
+  String get user_confirm_password {
+    return Intl.message(
+      'Repeat password',
+      name: 'user_confirm_password',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sign up`
+  String get registration_header_1 {
+    return Intl.message(
+      'Sign up',
+      name: 'registration_header_1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Already have an account?`
+  String get registration_header_2 {
+    return Intl.message(
+      'Already have an account?',
+      name: 'registration_header_2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sign up`
+  String get register_now {
+    return Intl.message(
+      'Sign up',
+      name: 'register_now',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Registering`
+  String get button_user_register {
+    return Intl.message(
+      'Registering',
+      name: 'button_user_register',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Log in`
+  String get login_back_to_login {
+    return Intl.message(
+      'Log in',
+      name: 'login_back_to_login',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You entered the wrong password.`
+  String get error_invalid_password {
+    return Intl.message(
+      'You entered the wrong password.',
+      name: 'error_invalid_password',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `User with this email address not found`
+  String get error_user_not_found {
+    return Intl.message(
+      'User with this email address not found',
+      name: 'error_user_not_found',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Error`
+  String get error_generic {
+    return Intl.message(
+      'Error',
+      name: 'error_generic',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Document`
+  String get document_title {
+    return Intl.message(
+      'Document',
+      name: 'document_title',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
