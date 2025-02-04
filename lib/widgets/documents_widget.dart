@@ -1,32 +1,40 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
+
 import 'package:phytosvit/database/sq_light/document_helper.dart';
 import 'package:phytosvit/database/sq_light/subdivisions_helper.dart';
 import 'package:phytosvit/models/document.dart';
 import 'package:phytosvit/models/scan_item.dart';
 import 'package:phytosvit/models/subdivision.dart';
-import 'package:intl/intl.dart';
+
+// -------------------------------
+// Вспомогательный класс для данных,
+// возвращаемых из _fetchDocuments().
+// Храним и документы, и подразделения.
+// -------------------------------
+class DocumentsData {
+  final List<Document> documents;
+  final List<Subdivision> subdivs;
+
+  DocumentsData({
+    required this.documents,
+    required this.subdivs,
+  });
+}
 
 class DocumentsWidget extends StatelessWidget {
   final DBDocumentHelperLite _dbHelper = DBDocumentHelperLite();
   final DBSubdivisionsHelperLite _subHelper = DBSubdivisionsHelperLite();
 
-  // Список подразделений, чтобы подставлять названия по subdivisionId
-  List<Subdivision> _subdivs = [];
-
   DocumentsWidget({super.key});
 
-  // ---------------------------
-  // Основной метод билда
-  // ---------------------------
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
-      child: FutureBuilder<List<Document>>(
-        future: _fetchDocuments(), // Запрос данных
+      child: FutureBuilder<DocumentsData>(
+        future: _fetchDocuments(), // Запрос данных (документы + подразделения)
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -38,12 +46,19 @@ class DocumentsWidget extends StatelessWidget {
             );
           }
 
-          final documents = snapshot.data ?? [];
+          // Извлекаем готовый объект с двумя списками
+          final data = snapshot.data;
+          if (data == null) {
+            return const Center(child: Text('Нет данных'));
+          }
+
+          final documents = data.documents;
+          final subdivs = data.subdivs;
 
           if (documents.isEmpty) {
             return _buildNoDocuments();
           } else {
-            return _buildDocumentsList(documents, context);
+            return _buildDocumentsList(documents, subdivs, context);
           }
         },
       ),
@@ -51,9 +66,9 @@ class DocumentsWidget extends StatelessWidget {
   }
 
   // ---------------------------
-  // Получаем документы + связанные данные
+  // Запрос документов + подразделений
   // ---------------------------
-  Future<List<Document>> _fetchDocuments() async {
+  Future<DocumentsData> _fetchDocuments() async {
     // 1. Параллельно загружаем список документов и подразделений
     final results = await Future.wait([
       _dbHelper.getDocuments(),
@@ -65,8 +80,8 @@ class DocumentsWidget extends StatelessWidget {
     final documentsMap = results[0] as List<Map<String, dynamic>>;
     final subdivsMap = results[1] as List<Map<String, dynamic>>;
 
-    // 2. Преобразуем подразделения и сохраняем их в _subdivs
-    _subdivs = subdivsMap.map((map) => Subdivision.fromMap(map)).toList();
+    // 2. Преобразуем подразделения (локальная переменная)
+    final subdivs = subdivsMap.map((map) => Subdivision.fromMap(map)).toList();
 
     // 3. Для каждого документа параллельно загружаем items
     final futures = documentsMap.map((doc) async {
@@ -77,15 +92,17 @@ class DocumentsWidget extends StatelessWidget {
       docCopy['items'] = items;
 
       // Создаём Document
-      final document = Document.fromMap(docCopy);
-      return document;
+      return Document.fromMap(docCopy);
     }).toList();
 
-    // 4. Ждём, пока все Future завершаются
+    // 4. Ожидаем завершения всех Future
     final documents = await Future.wait(futures);
 
-    // Возвращаем готовый список документов
-    return documents;
+    // 5. Возвращаем оба списка в одном объекте
+    return DocumentsData(
+      documents: documents,
+      subdivs: subdivs,
+    );
   }
 
   // ---------------------------
@@ -114,7 +131,11 @@ class DocumentsWidget extends StatelessWidget {
   // ---------------------------
   // Построение списка документов
   // ---------------------------
-  Widget _buildDocumentsList(List<Document> documents, BuildContext context) {
+  Widget _buildDocumentsList(
+    List<Document> documents,
+    List<Subdivision> subdivs,
+    BuildContext context,
+  ) {
     return ListView.builder(
       padding: const EdgeInsets.symmetric(vertical: 16.0),
       itemCount: documents.length,
@@ -125,7 +146,7 @@ class DocumentsWidget extends StatelessWidget {
         final formattedDate = _formatDate(document.date);
 
         // Определяем название подразделения по subdivisionId
-        final subdivisionName = _subdivs
+        final subdivisionName = subdivs
             .firstWhere(
               (subdivision) => subdivision.id == document.subdivisionId,
               orElse: () => Subdivision(
@@ -195,12 +216,13 @@ class DocumentsWidget extends StatelessWidget {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(
-                                'Нажата кнопка "Редактировать" для документа ${document.id}'),
+                              'Нажата кнопка "Редактировать" для документа ${document.id}',
+                            ),
                           ),
                         );
                         break;
                       case 'delete':
-                        bool confirm = await showDialog(
+                        final confirm = await showDialog<bool>(
                           context: context,
                           builder: (_) => AlertDialog(
                             title: const Text('Подтвердите удаление'),

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:phytosvit/style/colors.dart';
-import 'package:phytosvit/widgets/custom_input_decoration.dart';
+import 'package:phytosvit/utils/custom_input_decoration.dart';
 import 'package:phytosvit/services/settings_service.dart';
-import 'package:phytosvit/widgets/language_dropdown.dart';
+import 'package:phytosvit/widgets/language_dropdown_widget.dart';
 import 'package:phytosvit/providers/theme_provider.dart';
 import 'package:phytosvit/providers/locale_provider.dart';
 import 'package:provider/provider.dart';

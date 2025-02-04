@@ -3,7 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:phytosvit/database/user_dao.dart';
 import 'package:phytosvit/services/user_sync_service.dart';
-import 'package:phytosvit/widgets/password_encryptor_widget.dart';
+import 'package:phytosvit/utils/password_encryptor_widget.dart';
 import '../generated/l10n.dart';
 import '../models/user.dart';
 

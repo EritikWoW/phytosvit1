@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:phytosvit/database/user_dao.dart';
 import 'package:phytosvit/models/user.dart';
-import 'package:phytosvit/widgets/password_encryptor_widget.dart';
+import 'package:phytosvit/utils/password_encryptor_widget.dart';
 
 class RegistrationViewModel with ChangeNotifier {
   final formKey = GlobalKey<FormState>();

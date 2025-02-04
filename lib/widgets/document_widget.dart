@@ -8,7 +8,7 @@ import 'package:phytosvit/models/doc_type.dart';
 import 'package:phytosvit/models/subdivision.dart';
 import 'package:phytosvit/screens/barcode_scanner_screen.dart';
 import 'package:phytosvit/style/colors.dart';
-import 'package:phytosvit/widgets/date_picker.dart';
+import 'package:phytosvit/widgets/date_picker_widget.dart';
 
 import '../generated/l10n.dart';
 import '../models/document.dart';
