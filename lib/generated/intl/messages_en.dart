@@ -22,6 +22,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "api_address": MessageLookupByLibrary.simpleMessage("API Address"),
+        "api_token": MessageLookupByLibrary.simpleMessage("API Token"),
         "button_user_register":
             MessageLookupByLibrary.simpleMessage("Registering"),
         "document_title": MessageLookupByLibrary.simpleMessage("Document"),
@@ -41,14 +43,17 @@ class MessageLookup extends MessageLookupByLibrary {
             "Enter your email and password to login"),
         "login_remember_me":
             MessageLookupByLibrary.simpleMessage("Remember me"),
+        "qr_content": MessageLookupByLibrary.simpleMessage("QR Content"),
         "register_now": MessageLookupByLibrary.simpleMessage("Sign up"),
         "registration_header_1":
             MessageLookupByLibrary.simpleMessage("Sign up"),
         "registration_header_2":
             MessageLookupByLibrary.simpleMessage("Already have an account?"),
+        "save": MessageLookupByLibrary.simpleMessage("Save"),
         "setting_dark_theme":
             MessageLookupByLibrary.simpleMessage("Dark theme"),
         "setting_language": MessageLookupByLibrary.simpleMessage("Language"),
+        "settings": MessageLookupByLibrary.simpleMessage("Settings"),
         "title": MessageLookupByLibrary.simpleMessage("Phytosvit APP"),
         "user_confirm_password":
             MessageLookupByLibrary.simpleMessage("Repeat password"),

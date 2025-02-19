@@ -10,12 +10,22 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:phytosvit/main.dart';
 import 'package:phytosvit/services/settings_service.dart';
+import 'mocks.mocks.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+    final mockUserSync = MockUserSyncService();
+    final mockUnitSync = MockUnitSyncService();
+    final mockDocTypeSync = MockDocTypeSyncService();
+    final mockSubdivisionSync = MockSubdivisionSyncService();
+
     // Build our app and trigger a frame.
     await tester.pumpWidget(PhytosvitApp(
       settingsService: SettingsService(),
+      userSyncService: mockUserSync,
+      unitSyncService: mockUnitSync,
+      docTypeSyncService: mockDocTypeSync,
+      subdivisionSyncService: mockSubdivisionSync,
     ));
 
     // Verify that our counter starts at 0.

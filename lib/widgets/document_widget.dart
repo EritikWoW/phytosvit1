@@ -133,7 +133,8 @@ class _DocumentWidgetState extends State<DocumentWidget> {
           const SnackBar(content: Text('Документ успішно збережено')),
         );
 
-        Navigator.of(context).pop();
+        Navigator.of(context).pop(true);
+        // Navigator.of(context).pop();
       }
     } catch (error, stackTrace) {
       // Логируем ошибку и стек-трейс в консоль
@@ -419,6 +420,7 @@ class _DocumentWidgetState extends State<DocumentWidget> {
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
               const SizedBox(height: 8),
               DropdownButtonFormField<String>(
+                isExpanded: true,
                 value: selectedDocumentType,
                 items: docTypes.map((docType) {
                   return DropdownMenuItem<String>(

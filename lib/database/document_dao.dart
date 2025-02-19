@@ -26,7 +26,7 @@ class DocumentDao {
           try {
             await txn.insert(DBDocumentHelperLite.TABLE_ITEMS, itemMap);
           } catch (e) {
-            print('Error inserting item: $e');
+            debugPrint('Error inserting item: $e');
             rethrow;
           }
         }
@@ -35,7 +35,6 @@ class DocumentDao {
       });
     } catch (e) {
       debugPrint('Error in transaction: $e');
-      print('Error in transaction: $e');
       rethrow; // Пробрасываем исключение, чтобы можно было обработать его в вызывающем методе
     }
   }

@@ -22,5 +22,10 @@
   "error_invalid_password":"You entered the wrong password.",
   "error_user_not_found":"User with this email address not found",
   "error_generic":"Error",
-  "document_title":"Document"
+  "document_title":"Document",
+  "settings":"Settings",
+  "api_address": "API Address",
+  "api_token": "API Token",
+  "save": "Save",
+  "qr_content":"QR Content"
 }

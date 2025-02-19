@@ -98,8 +98,8 @@ class AppSettingsState extends State<AppSettings> {
                     children: [
                       SvgPicture.asset('assets/svg/login_logo.svg'),
                       const SizedBox(height: 24),
-                      const Text(
-                        'Настройки',
+                      Text(
+                        S.of(context).settings,
                         style: TextStyle(
                             fontSize: 32,
                             fontWeight: FontWeight.bold,
@@ -174,12 +174,12 @@ class AppSettingsState extends State<AppSettings> {
                           // Настройки API
                           _buildInputField(
                             controller: _apiController,
-                            label: 'API адрес',
+                            label: S.of(context).api_address,
                           ),
                           const SizedBox(height: 20.0),
                           _buildInputField(
                             controller: _tokenController,
-                            label: 'API Токен',
+                            label: S.of(context).api_token,
                           ),
                           const SizedBox(height: 40.0),
                           ElevatedButton(
@@ -192,7 +192,7 @@ class AppSettingsState extends State<AppSettings> {
                             ),
                             child: Center(
                               child: Text(
-                                'Сохранить',
+                                S.of(context).save,
                                 style: TextStyle(
                                     fontSize: 16, color: Colors.white),
                               ),

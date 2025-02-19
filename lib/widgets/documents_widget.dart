@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:phytosvit/database/document_dao.dart';
 
 import 'package:phytosvit/database/sq_light/document_helper.dart';
 import 'package:phytosvit/database/sq_light/subdivisions_helper.dart';
 import 'package:phytosvit/models/document.dart';
 import 'package:phytosvit/models/scan_item.dart';
 import 'package:phytosvit/models/subdivision.dart';
+import 'package:phytosvit/services/document_sync_service.dart';
 
 // -------------------------------
 // Вспомогательный класс для данных,
@@ -23,18 +25,48 @@ class DocumentsData {
   });
 }
 
-class DocumentsWidget extends StatelessWidget {
+// Переименовали в StatefulWidget
+class DocumentsWidget extends StatefulWidget {
+  const DocumentsWidget({super.key});
+
+  @override
+  DocumentsWidgetState createState() => DocumentsWidgetState();
+}
+
+// Сделали класс состояния публичным (чтобы можно было обращаться к нему через GlobalKey)
+class DocumentsWidgetState extends State<DocumentsWidget> {
   final DBDocumentHelperLite _dbHelper = DBDocumentHelperLite();
   final DBSubdivisionsHelperLite _subHelper = DBSubdivisionsHelperLite();
+  late final DocumentDao documentDao;
+  late final DocumentSyncService syncService;
 
-  DocumentsWidget({super.key});
+  late Future<DocumentsData> _futureData; // Хранит Future<DocumentsData>
+
+  @override
+  void initState() {
+    super.initState();
+    documentDao = DocumentDao();
+    syncService = DocumentSyncService(documentDao);
+    _loadDocuments();
+  }
+
+  // Этот метод можно вызывать извне, если нужно обновить список
+  Future<void> refreshDocuments() async {
+    _loadDocuments();
+    setState(() {});
+  }
+
+  // Вспомогательный метод, вызываемый при initState и refresh
+  void _loadDocuments() {
+    _futureData = _fetchDocuments();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
       child: FutureBuilder<DocumentsData>(
-        future: _fetchDocuments(), // Запрос данных (документы + подразделения)
+        future: _futureData,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -77,8 +109,8 @@ class DocumentsWidget extends StatelessWidget {
 
     // results[0] -> documentsMap
     // results[1] -> subdivsMap
-    final documentsMap = results[0] as List<Map<String, dynamic>>;
-    final subdivsMap = results[1] as List<Map<String, dynamic>>;
+    final documentsMap = results[0];
+    final subdivsMap = results[1];
 
     // 2. Преобразуем подразделения (локальная переменная)
     final subdivs = subdivsMap.map((map) => Subdivision.fromMap(map)).toList();
@@ -211,6 +243,9 @@ class DocumentsWidget extends StatelessWidget {
                   icon: const Icon(Icons.more_vert),
                   onSelected: (String value) async {
                     switch (value) {
+                      case 'sync':
+                        syncService.syncDocuments(document);
+                        break;
                       case 'edit':
                         // Открыть экран редактирования или другую операцию
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -255,6 +290,10 @@ class DocumentsWidget extends StatelessWidget {
                   },
                   itemBuilder: (BuildContext context) {
                     return <PopupMenuEntry<String>>[
+                      const PopupMenuItem<String>(
+                        value: 'sync',
+                        child: Text('Синхронізувати'),
+                      ),
                       const PopupMenuItem<String>(
                         value: 'edit',
                         child: Text('Редактировать'),

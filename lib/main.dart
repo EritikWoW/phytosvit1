@@ -21,11 +21,13 @@ import 'package:phytosvit/providers/theme_provider.dart';
 import 'package:phytosvit/providers/locale_provider.dart';
 import 'package:phytosvit/services/permission_service.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Инициализация SettingsService
+  // 1. Загрузка переменных окружения (.env)
   await dotenv.load();
+
+  // 2. Инициализация сервисов
   final settingsService = SettingsService();
   final userDao = UserDao();
   final unitDao = UnitDao();
@@ -37,20 +39,17 @@ void main() async {
   final subdivisionSyncService = SubdivisionSyncService(subdivisionDao);
   final permissionService = PermissionService();
 
-  // Запрос разрешений
+  // 3. Запрос разрешений (например, на геолокацию)
   await permissionService.requestLocationPermission();
 
-  // Загрузка настроек
+  // 4. Загрузка пользовательских настроек (тема, язык)
   await settingsService.loadSettings();
 
-  // Инициализация базы данных
+  // 5. Инициализация базы данных
   final dbHelper = DatabaseHelper();
-  await dbHelper.database;
+  await dbHelper.database; // Убедимся, что база создана
 
-  // Попытка синхронизации данных пользователей, единиц и подразделений
-  await _syncData(userSyncService, unitSyncService, subdivisionSyncService,
-      docTypeSyncService);
-
+  // 6. Запуск приложения
   runApp(
     MultiProvider(
       providers: [
@@ -66,35 +65,38 @@ void main() async {
               LoginViewModel(userDao: userDao, syncService: userSyncService),
         ),
         Provider(
-          create: (_) => UserSyncService(settingsService, userDao),
+          create: (_) => userSyncService,
         ),
+        Provider(create: (_) => unitSyncService),
+        Provider(create: (_) => docTypeSyncService),
+        Provider(create: (_) => subdivisionSyncService),
       ],
-      child: PhytosvitApp(settingsService: settingsService),
+      child: PhytosvitApp(
+        settingsService: settingsService,
+        userSyncService: userSyncService,
+        unitSyncService: unitSyncService,
+        docTypeSyncService: docTypeSyncService,
+        subdivisionSyncService: subdivisionSyncService,
+      ),
     ),
   );
 }
 
-Future<void> _syncData(
-  UserSyncService userSyncService,
-  UnitSyncService unitSyncService,
-  SubdivisionSyncService subdivisionSyncService,
-  DocTypeSyncService docTypeSyncService,
-) async {
-  try {
-    // Синхронизация пользователей, единиц и подразделений
-    await userSyncService.syncUsers();
-    await unitSyncService.syncUnits();
-    await subdivisionSyncService.syncSubdivisions();
-    await docTypeSyncService.syncDocTypes();
-  } catch (e) {
-    debugPrint('Ошибка при синхронизации данных: $e');
-  }
-}
-
 class PhytosvitApp extends StatelessWidget {
   final SettingsService settingsService;
+  final UserSyncService userSyncService;
+  final UnitSyncService unitSyncService;
+  final DocTypeSyncService docTypeSyncService;
+  final SubdivisionSyncService subdivisionSyncService;
 
-  const PhytosvitApp({super.key, required this.settingsService});
+  const PhytosvitApp({
+    super.key,
+    required this.settingsService,
+    required this.userSyncService,
+    required this.unitSyncService,
+    required this.docTypeSyncService,
+    required this.subdivisionSyncService,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -106,7 +108,7 @@ class PhytosvitApp extends StatelessWidget {
       theme: themeProvider.themeData,
       locale: localeProvider.locale,
       supportedLocales: S.delegate.supportedLocales,
-      localizationsDelegates: [
+      localizationsDelegates: const [
         S.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
@@ -117,14 +119,22 @@ class PhytosvitApp extends StatelessWidget {
         '/registration': (context) => const RegistrationScreen(),
         '/main': (context) => const MainScreen(),
       },
+      // Используем FutureBuilder, чтобы показывать "загрузку" во время синхронизации
       home: FutureBuilder(
         future: _initializeSyncData(context),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return const Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            );
           } else if (snapshot.hasError) {
-            return Center(child: Text('Ошибка синхронизации данных'));
+            return Scaffold(
+              body: Center(
+                child: Text('Ошибка синхронизации данных: ${snapshot.error}'),
+              ),
+            );
           } else {
+            // Если всё ок — идём на экран логина (или на MainScreen, как вам нужно)
             return const LoginScreen();
           }
         },
@@ -132,14 +142,15 @@ class PhytosvitApp extends StatelessWidget {
     );
   }
 
+  // Здесь выполняем полную синхронизацию (users, units, doc types, subdivisions)
   Future<void> _initializeSyncData(BuildContext context) async {
-    final syncService = Provider.of<UserSyncService>(context, listen: false);
-
-    // Ожидаем, пока база данных будет готова
     final dbHelper = DatabaseHelper();
     await dbHelper.database;
 
-    // Запускаем синхронизацию после создания базы данных
-    await syncService.syncUsers();
+    // Полная синхронизация
+    await userSyncService.syncUsers();
+    await unitSyncService.syncUnits();
+    await subdivisionSyncService.syncSubdivisions();
+    await docTypeSyncService.syncDocTypes();
   }
 }

@@ -22,5 +22,10 @@
   "error_invalid_password":"Ви ввели невірний пароль.",
   "error_user_not_found":"Користувача з такою електронною адресою не знайдено",
   "error_generic":"Помилка",
-  "document_title":"Документ"
+  "document_title":"Документ",
+  "settings":"Налаштування",
+  "api_address": "API Адреса",
+  "api_token": "API Токен",
+  "save": "Зберегти",
+  "qr_content":"Вміст QR"
 }

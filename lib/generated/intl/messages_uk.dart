@@ -22,6 +22,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "api_address": MessageLookupByLibrary.simpleMessage("API Адреса"),
+        "api_token": MessageLookupByLibrary.simpleMessage("API Токен"),
         "button_user_register":
             MessageLookupByLibrary.simpleMessage("Зареєструватися"),
         "document_title": MessageLookupByLibrary.simpleMessage("Документ"),
@@ -41,14 +43,17 @@ class MessageLookup extends MessageLookupByLibrary {
             "Введіть адресу електронної пошти та пароль для входу"),
         "login_remember_me":
             MessageLookupByLibrary.simpleMessage("Запам\'ятати мене"),
+        "qr_content": MessageLookupByLibrary.simpleMessage("Вміст QR"),
         "register_now": MessageLookupByLibrary.simpleMessage("Зареєструватися"),
         "registration_header_1":
             MessageLookupByLibrary.simpleMessage("Зареєструватися"),
         "registration_header_2":
             MessageLookupByLibrary.simpleMessage("Вже є аккаунт?"),
+        "save": MessageLookupByLibrary.simpleMessage("Зберегти"),
         "setting_dark_theme":
             MessageLookupByLibrary.simpleMessage("Темна тема"),
         "setting_language": MessageLookupByLibrary.simpleMessage("Мова"),
+        "settings": MessageLookupByLibrary.simpleMessage("Налаштування"),
         "title": MessageLookupByLibrary.simpleMessage("Phytosvit APP"),
         "user_confirm_password":
             MessageLookupByLibrary.simpleMessage("Повторіть пароль"),

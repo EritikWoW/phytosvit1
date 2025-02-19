@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'dart:async';
@@ -118,16 +119,16 @@ class DBDocumentHelperLite {
         where: 'document_id = ?',
         whereArgs: [documentId],
       );
-      print('Все элементы, связанные с документом $documentId, удалены');
+      debugPrint('Все элементы, связанные с документом $documentId, удалены');
 
       await db.delete(
         'documents',
         where: 'id = ?',
         whereArgs: [documentId],
       );
-      print('Документ с id $documentId успешно удален');
+      debugPrint('Документ с id $documentId успешно удален');
     } catch (e) {
-      print('Ошибка при удалении документа и его элементов: $e');
+      debugPrint('Ошибка при удалении документа и его элементов: $e');
       throw Exception('Ошибка при удалении документа и его элементов');
     }
   }

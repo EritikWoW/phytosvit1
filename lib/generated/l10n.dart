@@ -279,6 +279,56 @@ class S {
       args: [],
     );
   }
+
+  /// `Settings`
+  String get settings {
+    return Intl.message(
+      'Settings',
+      name: 'settings',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `API Address`
+  String get api_address {
+    return Intl.message(
+      'API Address',
+      name: 'api_address',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `API Token`
+  String get api_token {
+    return Intl.message(
+      'API Token',
+      name: 'api_token',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save`
+  String get save {
+    return Intl.message(
+      'Save',
+      name: 'save',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `QR Content`
+  String get qr_content {
+    return Intl.message(
+      'QR Content',
+      name: 'qr_content',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
